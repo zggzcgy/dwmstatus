@@ -138,7 +138,7 @@ main(void)
 		return 1;
 	}
 
-	for (;;sleep(90)) {
+	for (;;sleep(30)) {
 		avgs = loadavg();
 		batt = getbattery();
 		tmsh = mktimes("%W %a %d %b %H:%M %Z %Y", tzshanghai);
