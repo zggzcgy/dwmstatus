@@ -1,49 +1,47 @@
-# See LICENSE file for copyright and license details.
+# Compiler : gcc, g++, ...
+CC=gcc
+# Extension
+EXT=.c
+# Library flags : -lgl, -lpthread, ...
+LDFLAGS= -lX11 -lasound 
+# Debug flags
+DEBUG_FLAGS= -DDEBUG=1 -W -Wall -ansi -pedantic -g
+# Other flags
+FLAGS= -std=c99 -Wall
 
 include config.mk
+#INCLUDE_DIR=include
+SOURCE_DIR=src
 
-SRC = ${NAME}.c
-OBJ = ${SRC:.c=.o}
+PROG_NAME=dwmstatus
+SRCS=\
+dwmstatus.c
 
-all: options ${NAME}
+################################################################
+#
+################################################################
 
-options:
-	@echo ${NAME} build options:
-	@echo "CFLAGS   = ${CFLAGS}"
-	@echo "LDFLAGS  = ${LDFLAGS}"
-	@echo "CC       = ${CC}"
+ifeq (${DEBUG},1)
+	FLAGS+=${DEBUG_FLAGS}
+endif
+#FLAGS+= -I ${INCLUDE_DIR}
+OBJS=${SRCS:${EXT}=.o}
 
-.c.o:
-	@echo CC $<
-	@${CC} -c ${CFLAGS} $<
 
-${OBJ}: config.mk
+${PROG_NAME}: ${OBJS}
+	${CC} -o $@ ${OBJS} ${LDFLAGS} ${FLAGS}
 
-${NAME}: ${OBJ}
-	@echo CC -o $@
-	@${CC} -o $@ ${OBJ} ${LDFLAGS}
+%.o: ${SOURCE_DIR}/%${EXT}
+	${CC} -o $@ -c $< ${FLAGS}
+
+install: ${PROG_NAME}
+	@echo installing executable file to ${PREFIX}/bin
+	@mkdir -p ${PREFIX}/bin
+	@cp -f ${PROG_NAME} ${PREFIX}/bin/${PROG_NAME}
+	@chmod 755 ${PREFIX}/bin/${PROG_NAME}
+
+mrproper:
+	rm -rf *.o *~ \#*\# ${PROG_NAME}
 
 clean:
-	@echo cleaning
-	@rm -f ${NAME} ${OBJ} ${NAME}-${VERSION}.tar.gz
-
-dist: clean
-	@echo creating dist tarball
-	@mkdir -p ${NAME}-${VERSION}
-	@cp -R Makefile config.mk LICENSE \
-		${SRC} ${NAME}-${VERSION}
-	@tar -cf ${NAME}-${VERSION}.tar ${NAME}-${VERSION}
-	@gzip ${NAME}-${VERSION}.tar
-	@rm -rf ${NAME}-${VERSION}
-
-install: all
-	@echo installing executable file to ${DESTDIR}${PREFIX}/bin
-	@mkdir -p ${DESTDIR}${PREFIX}/bin
-	@cp -f ${NAME} ${DESTDIR}${PREFIX}/bin
-	@chmod 755 ${DESTDIR}${PREFIX}/bin/${NAME}
-
-uninstall:
-	@echo removing executable file from ${DESTDIR}${PREFIX}/bin
-	@rm -f ${DESTDIR}${PREFIX}/bin/${NAME}
-
-.PHONY: all options clean dist install uninstall
+	rm -rf *.o
