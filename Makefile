@@ -1,9 +1,13 @@
 # See LICENSE file for copyright and license details.
-
 include config.mk
+SOURCE_DIR=src
+EXT = .c
+SRC = dwmstatus.c
+OBJ = ${SRC:${EXT}=.o}
 
-SRC = ${NAME}.c
-OBJ = ${SRC:.c=.o}
+ifeq (${DEBUG},1)
+	FLAGS+=${DEBUG_FLAGS}
+endif
 
 all: options ${NAME}
 
@@ -13,15 +17,14 @@ options:
 	@echo "LDFLAGS  = ${LDFLAGS}"
 	@echo "CC       = ${CC}"
 
-.c.o:
-	@echo CC $<
-	@${CC} -c ${CFLAGS} $<
-
-${OBJ}: config.mk
-
 ${NAME}: ${OBJ}
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LDFLAGS}
+
+
+%.o: ${SRC_DIR}/%${EXT}
+	@echo CC $<
+	@${CC} -o $@ -c ${CFLAGS} $< 
 
 clean:
 	@echo cleaning
@@ -31,7 +34,7 @@ dist: clean
 	@echo creating dist tarball
 	@mkdir -p ${NAME}-${VERSION}
 	@cp -R Makefile config.mk LICENSE \
-		${SRC} ${NAME}-${VERSION}
+		${SRC_DIR}/${SRC} ${NAME}-${VERSION}
 	@tar -cf ${NAME}-${VERSION}.tar ${NAME}-${VERSION}
 	@gzip ${NAME}-${VERSION}.tar
 	@rm -rf ${NAME}-${VERSION}
