@@ -23,12 +23,12 @@
 */
 
 #define CPU_NBR 4
-#define BAR_HEIGHT 15
-#define BAT_NOW_FILE "/sys/class/power_supply/BAT0/charge_now"
-#define BAT_FULL_FILE "/sys/class/power_supply/BAT0/charge_full"
+#define BAR_HEIGHT 21
+#define BAT_NOW_FILE "/sys/class/power_supply/BAT0/energy_now"
+#define BAT_FULL_FILE "/sys/class/power_supply/BAT0/energy_full"
 #define BAT_STATUS_FILE "/sys/class/power_supply/BAT0/status"
 
-#define TEMP_SENSOR_FILE "/sys/class/hwmon/hwmon1/temp1_input"
+#define TEMP_SENSOR_FILE "/sys/class/hwmon/hwmon0/temp1_input"
 #define MEMINFO_FILE "/proc/meminfo"
 
 int   getBattery();
@@ -105,7 +105,7 @@ main(void)
       int ret = snprintf(
                status, 
                MSIZE, 
-               "^c%s^ [VOL %d%%] [CPU^f1^%s^f4^%s^f4^%s^f4^%s^f3^^c%s^] [MEM^f1^%s^f20^^c%s^] [W %d] [TEMP %d%cC] %s^c%s^ %s ", 
+               "^c%s^ [VOL %d%%] [CPU^f1^%s^f4^%s^f4^%s^f4^%s^f3^^c%s^] [MEM^f1^%s^f20^^c%s^] [W %d] [TEMP %d°C] %s^c%s^ %s ", 
              fg_color,
                vol, 
                cpu_bar[0],
@@ -116,7 +116,7 @@ main(void)
                mem_bar,
                fg_color,
                wifi,
-               temp, CELSIUS_CHAR, 
+               temp,  
                bat0, fg_color, datetime
                );
       if(ret >= MSIZE)
