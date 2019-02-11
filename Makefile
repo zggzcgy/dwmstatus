@@ -24,6 +24,7 @@ dwmstatus.c
 ifeq (${DEBUG},1)
 	FLAGS+=${DEBUG_FLAGS}
 endif
+
 #FLAGS+= -I ${INCLUDE_DIR}
 OBJS=${SRCS:${EXT}=.o}
 
