@@ -406,7 +406,7 @@ getDateTime()
       exit(1);
     }
   
-  if(!strftime(buf, sizeof(char)*65-1, "[%a %b %d] [%H:%M]", resulttm))
+  if(!strftime(buf, sizeof(char)*65-1, "[%a %b %d] [%H:%M:%S]", resulttm))
     {
       fprintf(stderr, "strftime is 0.\n");
       exit(1);
